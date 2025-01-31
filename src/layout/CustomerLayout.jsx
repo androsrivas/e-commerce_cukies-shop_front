@@ -1,8 +1,12 @@
-import React from 'react'
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 function CustomerLayout() {
   return (
-    <div>CustomerLayout</div>
+    <main>
+      <Header />
+      <Footer />
+    </main>
   )
 }
 
