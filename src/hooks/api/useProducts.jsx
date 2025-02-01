@@ -20,9 +20,15 @@ function useProducts() {
         setProducts(productByIdFromAPI);
     }
 
+    const addProductFromAPI = async(newProduct) => {
+        const createProductFromAPI = await createProduct(newProduct);
+        setProducts(createProductFromAPI);
+    }
+
     useEffect(() => {
         fetchProductsFromAPI(),
-        fetchProductByIdFromAPI()
+        fetchProductByIdFromAPI(),
+        addProductFromAPI()
     }, []);
 
     return { products, setProducts };
