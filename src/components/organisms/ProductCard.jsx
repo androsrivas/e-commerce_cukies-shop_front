@@ -14,11 +14,11 @@ function ProductCard({ product }) {
         <CardHeader>
             <img src={ product.imageUrl } alt={ product.name }/>
         </CardHeader>
-        <CardContent>
-            <CardTitle>{ product.name }</CardTitle>
-            <CardDescription>
-              { product.price }
-              { product.category }
+        <CardContent className="flex-col gap-5">
+            <CardTitle className="text-xl">{ product.name }</CardTitle>
+            <CardDescription className="flex justify-between">
+              <p>{ product.categoryName }</p>
+              <h3 className="text-lg">{ product.price }</h3>
             </CardDescription>
         </CardContent>
         <CardFooter className="flex justify-center gap-5">
