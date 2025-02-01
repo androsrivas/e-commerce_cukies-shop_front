@@ -1,0 +1,47 @@
+import {
+    Table,
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+  } from "@/components/ui/table"
+import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch"
+
+
+function ProductTable({ products }) {
+
+    return (
+        <Table>
+            <TableCaption>Tu lista de productos</TableCaption>
+            <TableHeader>
+                <TableRow>
+                    <TableHead>ID</TableHead>
+                    <TableHead>Nombre</TableHead>
+                    <TableHead>Precio</TableHead>
+                    <TableHead>Disponible</TableHead>
+                    <TableHead>Acciones</TableHead>
+                </TableRow>
+            </TableHeader>
+            <TableBody> 
+                {products.map((product) => (
+                    <TableRow key={ product.id }>    
+                        <TableCell>{ product.id }</TableCell>
+                        <TableCell>{ product.name }</TableCell>
+                        <TableCell>{ product.price }</TableCell>
+                        <TableCell>{ product.featured }</TableCell>
+                        <TableCell className="flex gap-2">
+                            <Button className="rounded-xl">Ver detalle</Button>
+                            <Button className="rounded-xl">Editar</Button>
+                            <Button className="rounded-xl">Eliminar</Button>
+                        </TableCell>
+                    </TableRow>
+                ))}
+            </TableBody>
+        </Table>
+    )
+}
+
+export default ProductTable;

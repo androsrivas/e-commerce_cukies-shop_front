@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import CustomerLayout from "../layout/CustomerLayout";
 import AdminLayout from "../layout/AdminLayout";
 import ProductList from "../pages/ProductList";
+import AdminProductList from "../pages/admin/AdminProductList";
 
 export const router = createBrowserRouter([
     {
@@ -37,7 +38,7 @@ export const router = createBrowserRouter([
             },
             {
                 path: "productos",
-                // element: <ProductList />, //mismo elemento que ruta lista
+                element: <AdminProductList />
             },               
             {
                 path: "crear",
