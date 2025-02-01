@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { useErrorHandler } from "../error/useErrorHandler";
+import useErrorHandler from "../error/useErrorHandler";
 
 export function useApiCall() {
     const [data, setData] = useState(null);
