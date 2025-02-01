@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import CustomerLayout from "../layout/CustomerLayout";
 import AdminLayout from "../layout/AdminLayout";
+import ProductList from "../pages/ProductList";
 
 export const router = createBrowserRouter([
     {
@@ -13,7 +14,7 @@ export const router = createBrowserRouter([
             },
             {
                 path: "tienda",
-                element: "Shop",
+                element: <ProductList />,
             },
             {
                 path: "producto/:productId",
