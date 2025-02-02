@@ -4,11 +4,11 @@ import useErrorHandler from "../error/useErrorHandler";
 export function useApiCall() {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(false);
-    const { errors, statusCode, handleError, clearError } = useErrorHandler();
+    const { errors, statusCode, handleError, clearErrors } = useErrorHandler();
 
     const fetchData = useCallback(async (apiFunction, ...args) => {
         setLoading(true);
-        clearError();
+        clearErrors();
 
         try {
             const result = await apiFunction(...args);
@@ -18,9 +18,9 @@ export function useApiCall() {
         } finally {
             setLoading(false);
         }
-    }, [clearError, handleError]);
+    }, [clearErrors, handleError]);
 
-    return { data, loading, errors, statusCode, fetchData };
+    return { data, loading, errors, statusCode, fetchData, clearErrors };
 };
 
 export default useApiCall;
