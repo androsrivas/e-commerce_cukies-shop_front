@@ -1,40 +1,40 @@
+import { useEffect, useState, useMemo } from "react";
 import { ProductContext } from "./ProductContext";
-import useProductService from "../../hooks/api/useProductService";
-import { useState, useEffect } from "react";
+import { getAllProducts } from "../../services/ProductService";
 
 const ProductProvider = ({ children }) => {
-    const { 
-        products,
-        loading,
-        errors, 
-        fetchAllProducts, 
-        fetchProductById, 
-        addProduct, 
-        modifyProduct, 
-        removeProduct 
-    } = useProductService();
-    const [ productList, setProductList ] = useState([]);
+    const [products, setProducts] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [errors, setErrors] = useState(null);
 
     useEffect(() => {
-        fetchAllProducts();
+        const fetchProducts = async () => {
+            try {
+                const data = await getAllProducts();
+                setProducts(data);
+                console.log("Product Provider dades rebudes: ", data);
+            } catch (error) {
+                console.error("Error rebent dades: ", error);
+                setErrors([error.message]);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchProducts();
+
     }, []);
 
-    useEffect(() => {
-        if (Array.isArray(products)) setProductList(products);
-    }, [products]);
+    const contextValue = useMemo(() => ({
+        products, 
+        loading,
+        errors,
+    }), [products, loading, errors]);
+    
+    if (loading) return <div>Loading...</div>;
+    if (errors?.length) return <div>Error: { errors.join(", ") }</div>;
 
     return(
-        <ProductContext.Provider value={{
-            products,
-            setProductList,
-            loading,
-            errors,
-            fetchAllProducts,
-            fetchProductById,
-            addProduct,
-            modifyProduct,
-            removeProduct
-        }}>
+        <ProductContext.Provider value={ contextValue }>
             { children }
         </ProductContext.Provider>
     );
