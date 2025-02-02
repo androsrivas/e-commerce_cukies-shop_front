@@ -1,15 +1,16 @@
 import { useApiCall } from "./useApiCall";
 import { getAllProducts, getProductById, createProduct, updateProduct, deleteProduct } from "../../services/ProductService";
+import { useEffect } from "react";
 
-export const useProductService = () => {
-    const { data, loading, errors, statusCode, fetchData } = useApiCall();
+const useProductService = () => {
+    const { data: products, loading, errors, statusCode, fetchData } = useApiCall();
 
     const fetchAllProducts = () => {
         fetchData(getAllProducts);
     };
 
     const fetchProductById = (id) => {
-        fetchData(getProductById);
+        fetchData(getProductById, id);
     };
 
     const addProduct = (newProduct) => {
@@ -24,8 +25,12 @@ export const useProductService = () => {
         fetchData(deleteProduct, id);
     };
 
+    useEffect(() => {
+        fetchAllProducts();
+    }, []);
+
     return {
-        data,
+        products,
         loading,
         errors,
         statusCode,
@@ -36,3 +41,5 @@ export const useProductService = () => {
         removeProduct
     };
 }
+
+export default useProductService;

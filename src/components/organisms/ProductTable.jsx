@@ -26,19 +26,23 @@ function ProductTable({ products }) {
                 </TableRow>
             </TableHeader>
             <TableBody> 
-                {products.map((product) => (
-                    <TableRow key={ product.id }>    
-                        <TableCell>{ product.id }</TableCell>
-                        <TableCell>{ product.name }</TableCell>
-                        <TableCell>{ product.price }</TableCell>
-                        <TableCell>{ product.featured }</TableCell>
-                        <TableCell className="flex gap-2">
-                            <Button className="rounded-xl">Ver detalle</Button>
-                            <Button className="rounded-xl">Editar</Button>
-                            <Button className="rounded-xl">Eliminar</Button>
-                        </TableCell>
-                    </TableRow>
-                ))}
+                {Array.isArray(products) && products.length > 0 ? (
+                    products.map((product) => (
+                        <TableRow key={ product.id }>    
+                            <TableCell>{ product.id }</TableCell>
+                            <TableCell>{ product.name }</TableCell>
+                            <TableCell>{ product.price }</TableCell>
+                            <TableCell>{ product.featured }</TableCell>
+                            <TableCell className="flex gap-2">
+                                <Button className="rounded-xl">Ver detalle</Button>
+                                <Button className="rounded-xl">Editar</Button>
+                                <Button className="rounded-xl">Eliminar</Button>
+                            </TableCell>
+                        </TableRow>
+                    ))
+                ) : (
+                    <p>Error loading products.</p>
+                )}
             </TableBody>
         </Table>
     )
