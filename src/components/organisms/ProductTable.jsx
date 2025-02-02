@@ -10,9 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch"
 
-
 function ProductTable({ products }) {
-
     return (
         <Table>
             <TableCaption>Tu lista de productos</TableCaption>
@@ -41,7 +39,9 @@ function ProductTable({ products }) {
                         </TableRow>
                     ))
                 ) : (
-                    <p>Error loading products.</p>
+                    <TableRow>
+                        <TableCell colSpan={ 5 }>Error loading products.</TableCell>
+                    </TableRow>
                 )}
             </TableBody>
         </Table>

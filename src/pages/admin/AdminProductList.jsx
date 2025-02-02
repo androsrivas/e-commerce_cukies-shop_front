@@ -1,18 +1,14 @@
 import { useContext } from "react"
 import ProductTable from "../../components/organisms/ProductTable"
 import { ProductContext } from "../../context/ProductContext/ProductContext"
-import { useEffect } from "react";
 
 function AdminProductList() {
-    const { products, loading, errors, fetchAllProducts } = useContext(ProductContext);
-
-    useEffect(() => {
-        fetchAllProducts();
-    }, []);
+    const { products, loading, errors } = useContext(ProductContext);
 
     if (loading) return <div>Loading products...</div>;
     if (errors?.length) return <div>Error: {errors.join(", ")}</div>;
 
+    console.log("AdminProductList dades rebudes: ", products);
   return (
     <main>
         <div>

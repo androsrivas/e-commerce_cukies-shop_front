@@ -1,14 +1,9 @@
 import { useContext } from "react";
 import { ProductContext } from "../context/ProductContext/ProductContext";
 import ProductCard from "../components/organisms/ProductCard";
-import { useEffect } from "react";
 
 function ProductList() {
-    const { products, loading, errors, fetchAllProducts } = useContext(ProductContext);
-
-    useEffect(() => {
-        fetchAllProducts();
-    }, []);
+    const { products, loading, errors } = useContext(ProductContext);
 
     if (loading) return <div className="text-center col-span-full">Loading products...</div>
     if (errors?.length) return <div className="text-center col-span-full">Error: {errors.join(", ")}</div>;
