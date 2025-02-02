@@ -1,11 +1,8 @@
-import { useContext, useEffect } from "react"
-import ProductForm from "../../components/organisms/ProductForm"
-import { ProductContext } from "../../context/ProductContext/ProductContext"
+import ProductForm from "../../components/organisms/forms/ProductForm";
 
 function AddProduct() {
-
   return (
-    <ProductForm />
+    <ProductForm />    
   )
 }
 
