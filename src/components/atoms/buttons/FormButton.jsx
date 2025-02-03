@@ -1,9 +1,9 @@
 import { Button } from "@/components/ui/button";
 
-const FormButton = ({ children, ...props }) => {
+const FormButton = ({ submit, text }) => {
     return (
-        <Button type="submit" disabled={ props.disabled }>
-            { props.loading ? "Enviando..." : children} 
+        <Button type={ submit }>
+            { text } 
         </Button>
     );
 };
