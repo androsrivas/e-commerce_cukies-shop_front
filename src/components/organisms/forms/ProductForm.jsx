@@ -1,104 +1,155 @@
-import { useState, useMemo } from "react";
+import { useState, useContext } from "react";
 import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import productSchema from "../../../schemas/productSchema";
-import { createProduct } from "../../../services/ProductService";
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 import FormButton from "../../atoms/buttons/FormButton";
+import * as yup from "yup";
+import { ProductContext } from "../../../context/ProductContext/ProductContext";
+import { yupResolver } from "@hookform/resolvers/yup";
+import CategorySelect from "../../atoms/CategorySelect";
 
-const ProductForm = () => {
-    const [products, setProducts] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [errors, setErrors] = useState(null);
+const schema = yup.object().shape({
+  name: yup.string().required("Indique un nombre para el producto.").label("Nombre"),
+  price: yup
+    .number()
+    .typeError("El precio debe ser un número.")
+    .positive("El precio debe ser un número positivo.")
+    .required("Indique el precio para el producto.")
+    .label("Precio"),
+  description: yup.string().label("Descripción"),
+  imageUrl: yup.string().url("Indique una URL válida.").label("Imagen"),
+  categoryName: yup.string().label("Categoría"),
+  featured: yup.boolean().label("Disponible"),
+});
 
-    const addProduct = async (productData) => {
-        setLoading(true);
-        setErrors(null);
+const ProductForm = () =>  {
+  const { createProduct } = useContext(ProductContext);
+  const [ isSubmitting, setIsSubmitting ] = useState(false);
+  const form = useForm({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      name: "",
+      price: 0.00,
+      description: "",
+      imageUrl: "",
+      categoryName: "",
+      featured: false
+    },
+  });
 
+  const onSubmit = async (values) => {
+    setIsSubmitting(true);
+    try {
+      await createProduct(values);
+      form.reset();
+      alert("Producto creado correctamente.");
+    } catch (error) {
+      console.error("Error al crear el producto: ", error);
+      alert("Error al crear el producto.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
 
-        try {
-            const newProduct = await createProduct(productData); 
-            setProducts(prevProducts => [...(prevProducts || []), newProduct]);
-            return newProduct;
-        } catch (error) {
-            console.error("Error afegint nou producte: ", error);
-            setErrors([error.message]);
-            throw error; 
-        } finally {
-            setLoading(false);
-        }
-    };
+  return (
+    <Form {...form}>
+      <form onSubmit={ form.handleSubmit(onSubmit) }>
+        <FormField
+          name="name"
+          control={ form.control }
+          render={({field}) => (
+            <FormItem>
+              <FormLabel>Nombre</FormLabel>
+              <FormControl>
+                <Input placeholder="Nombre del producto" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-    const contextValue = useMemo(() => ({
-        products,
-        loading,
-        errors,
-        addProduct,
-    }), [products, loading, errors, addProduct]);
+        <FormField 
+          name="price"
+          control={ form.control }
+          render={(field) => (
+            <FormItem>
+          <FormLabel>Precio</FormLabel>
+            <FormControl>
+              <Input type="number" placeholder="Precio" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+          )}
+        />
+          
 
-    const {
-        register,
-        handleSubmit,
-        formState: { errors: formErrors },
-        reset,
-    } = useForm({
-        resolver: yupResolver(productSchema),
-    });
+        <FormField 
+          name="description"
+          control={ form.control }
+          render={({field}) => (
+            <FormItem>
+            <FormLabel>Descripción</FormLabel>
+              <FormControl>
+                <Input placeholder="Descripción" {...field} />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+        
+        
+        <FormField 
+          name="imageUrl"
+          control={ form.control }
+          render={({field}) => (
+            <FormItem>
+            <FormLabel>Imagen</FormLabel>
+              <FormControl>
+                <Input type="url" placeholder="Enlace de imagen" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        
 
-    const onSubmit = async (data) => {
-        console.log("onSubmit called with: ", data);
-        console.log("contextValue: ", contextValue);
-        console.log("contextValue.addProduct:", contextValue.addProduct);
-        try {
-            await contextValue.addProduct(data); 
-            console.log("Producte creat correctament!");
-            reset();
-        } catch (error) {
-            console.error("Error al crear el producte:", error);
-            setErrors([error.message]);
-        }
-    };
+        <FormField 
+          name="categoryName"
+          control={ form.control }
+          render={({field}) => (
+            <FormItem>
+            <FormLabel>Categoría</FormLabel>
+            <FormControl>
+              <CategorySelect {...field} />
+            </FormControl>
+          </FormItem>
+          )}
+        />
+            
 
-    return (
-        <form onSubmit={handleSubmit(onSubmit)}>
-            <h2>Crear producto:</h2>
-
-            <div>
-                <label htmlFor="name">Nombre</label>
-                <input type="text" id="name" {...register("name")} />
-                {formErrors.name && <p>{formErrors.name.message}</p>}
-            </div>
-
-            <div>
-                <label htmlFor="price">Precio</label>
-                <input type="number" id="price" {...register("price")} />
-                {formErrors.price && <p>{formErrors.price.message}</p>}
-            </div>
-
-            <div>
-                <label htmlFor="description">Descripción</label>
-                <textarea id="description" {...register("description")} />
-                {formErrors.description && <p>{formErrors.description.message}</p>}
-            </div>
-
-            <div>
-                <label htmlFor="imageUrl">Imagen</label>
-                <input type="url" id="imageUrl" {...register("imageUrl")} />
-                {formErrors.imageUrl && <p>{formErrors.imageUrl.message}</p>}
-            </div>
-
-            <div>
-                <label htmlFor="featured">Disponible</label>
-                <input type="checkbox" id="featured" {...register("featured")} />
-            </div>
-
-            <FormButton type="submit" disabled={contextValue.loading} loading={contextValue.loading}>
-                Enviar
-            </FormButton>
-
-            {/* {contextValue.loading && <p>Creant producte...</p>} */}
-            {contextValue.errors && contextValue.errors.map((error) => <p key={error}>{error}</p>)}
-        </form>
-    );
-};
+        <FormField 
+          name="featured"
+          control={ form.control }
+          render={({field}) => (
+            <FormItem>
+            <FormLabel>Disponible</FormLabel>
+              <FormControl>
+                <Checkbox {...field} id="featured" />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+        <FormButton submit={ onSubmit } text="Crear"/>
+      </form>
+    </Form>
+  )
+}
 
 export default ProductForm;
