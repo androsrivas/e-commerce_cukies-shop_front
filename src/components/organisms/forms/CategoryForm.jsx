@@ -1,5 +1,5 @@
 import { useState, useContext } from "react";
-import { useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import {
     Form,
     FormControl,
@@ -10,19 +10,15 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import FormButton from "../../atoms/buttons/FormButton";
-import * as yup from "yup";
-import { CategoryContext } from "../../../context/CategoryContext/CategoryContext";
 import { yupResolver } from "@hookform/resolvers/yup";
-
-const schema = yup.object().shape({
-    name: yup.string().required("Indique un nombre para la categoría.").label("Nombre"),
-});
+import categorySchema from "../../../schemas/categorySchema";
+import { CategoryContext } from "../../../context/CategoryContext/CategoryContext";
 
 const CategoryForm = () => {
-    const { createCategory } = useContext(CategoryContext);
+    const { addCategory } = useContext(CategoryContext);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const form = useForm({
-        resolver: yupResolver(schema),
+        resolver: yupResolver(categorySchema),
         defaultValues: {
             name: ""
         },
@@ -31,7 +27,7 @@ const CategoryForm = () => {
     const onSubmit = async (values) => {
         setIsSubmitting(true);
         try {
-            await createCategory(values);
+            await addCategory(values);
             form.reset();
             alert("Categoría creada correctamente.");
         } catch (error) {
@@ -43,6 +39,7 @@ const CategoryForm = () => {
     }
 
     return (
+        <FormProvider>
         <Form {...form}>
             <form onSubmit={ form.handleSubmit(onSubmit) }>
                 <FormField 
@@ -58,9 +55,10 @@ const CategoryForm = () => {
                         </FormItem>
                     )}
                 />
-                <FormButton submit={ onSubmit } text="Crear" />
+                <FormButton text="Añadir" isSubmitting={ isSubmitting } />
             </form>
         </Form>
+        </FormProvider>
     )
 };
 

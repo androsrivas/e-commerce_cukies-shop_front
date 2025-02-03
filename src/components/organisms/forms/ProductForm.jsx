@@ -1,5 +1,5 @@
 import { useState, useContext } from "react";
-import { useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import {
     Form,
     FormControl,
@@ -11,36 +11,30 @@ import {
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import FormButton from "../../atoms/buttons/FormButton";
-import * as yup from "yup";
 import { ProductContext } from "../../../context/ProductContext/ProductContext";
 import { yupResolver } from "@hookform/resolvers/yup";
-import CategorySelect from "../../atoms/CategorySelect";
-
-const schema = yup.object().shape({
-  name: yup.string().required("Indique un nombre para el producto.").label("Nombre"),
-  price: yup
-    .number()
-    .typeError("El precio debe ser un número.")
-    .positive("El precio debe ser un número positivo.")
-    .required("Indique el precio para el producto.")
-    .label("Precio"),
-  description: yup.string().label("Descripción"),
-  imageUrl: yup.string().url("Indique una URL válida.").label("Imagen"),
-  categoryName: yup.string().label("Categoría"),
-  featured: yup.boolean().label("Disponible"),
-});
+import { CategoryContext } from "../../../context/CategoryContext/CategoryContext";
+import productSchema from "../../../schemas/productSchema";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+  } from "@/components/ui/select";
 
 const ProductForm = () =>  {
-  const { createProduct } = useContext(ProductContext);
+  const { addProduct } = useContext(ProductContext);
+  const { categories } = useContext(CategoryContext);
   const [ isSubmitting, setIsSubmitting ] = useState(false);
   const form = useForm({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(productSchema),
     defaultValues: {
       name: "",
-      price: 0.00,
+      price: 0,
       description: "",
       imageUrl: "",
-      categoryName: "",
+      categoryId: "Selecciona una categoría",
       featured: false
     },
   });
@@ -48,7 +42,12 @@ const ProductForm = () =>  {
   const onSubmit = async (values) => {
     setIsSubmitting(true);
     try {
-      await createProduct(values);
+      const productData = {
+        ...values,
+        categoryId: values.categoryId,
+      };
+
+      await addProduct(productData);
       form.reset();
       alert("Producto creado correctamente.");
     } catch (error) {
@@ -60,12 +59,13 @@ const ProductForm = () =>  {
   }
 
   return (
+    <FormProvider>
     <Form {...form}>
       <form onSubmit={ form.handleSubmit(onSubmit) }>
         <FormField
           name="name"
           control={ form.control }
-          render={({field}) => (
+          render={({ field }) => (
             <FormItem>
               <FormLabel>Nombre</FormLabel>
               <FormControl>
@@ -79,7 +79,7 @@ const ProductForm = () =>  {
         <FormField 
           name="price"
           control={ form.control }
-          render={(field) => (
+          render={({ field }) => (
             <FormItem>
           <FormLabel>Precio</FormLabel>
             <FormControl>
@@ -94,7 +94,7 @@ const ProductForm = () =>  {
         <FormField 
           name="description"
           control={ form.control }
-          render={({field}) => (
+          render={({ field }) => (
             <FormItem>
             <FormLabel>Descripción</FormLabel>
               <FormControl>
@@ -108,7 +108,7 @@ const ProductForm = () =>  {
         <FormField 
           name="imageUrl"
           control={ form.control }
-          render={({field}) => (
+          render={({ field }) => (
             <FormItem>
             <FormLabel>Imagen</FormLabel>
               <FormControl>
@@ -121,13 +121,24 @@ const ProductForm = () =>  {
         
 
         <FormField 
-          name="categoryName"
+          name="categoryId"
           control={ form.control }
-          render={({field}) => (
+          render={({ field }) => (
             <FormItem>
             <FormLabel>Categoría</FormLabel>
             <FormControl>
-              <CategorySelect {...field} />
+              <Select onValueChange={ field.onChange } defaultValue={ field.value }>
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecciona una categoría"/>
+                </SelectTrigger>
+                <SelectContent>
+                  {categories.map((category) => (
+                    <SelectItem key={ category.id } value={ category.id }>
+                      { category.name }
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </FormControl>
           </FormItem>
           )}
@@ -137,18 +148,23 @@ const ProductForm = () =>  {
         <FormField 
           name="featured"
           control={ form.control }
-          render={({field}) => (
+          render={({ field }) => (
             <FormItem>
             <FormLabel>Disponible</FormLabel>
               <FormControl>
-                <Checkbox {...field} id="featured" />
+                <Checkbox 
+                  id="featured" 
+                  checked={ !!field.value }
+                  onCheckedChange={ field.onChange }
+                />
               </FormControl>
             </FormItem>
           )}
         />
-        <FormButton submit={ onSubmit } text="Crear"/>
+        <FormButton text="Crear" isSubmitting={ isSubmitting }/>
       </form>
     </Form>
+    </FormProvider>
   )
 }
 

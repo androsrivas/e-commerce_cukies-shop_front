@@ -1,5 +1,5 @@
 import { useContext } from "react"
-import ProductTable from "../../components/organisms/ProductTable"
+import ProductTable from "../../components/organisms/tables/ProductTable"
 import { ProductContext } from "../../context/ProductContext/ProductContext"
 
 function AdminProductList() {

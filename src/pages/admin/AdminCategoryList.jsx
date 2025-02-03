@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import CategoryTable from "../../components/organisms/CategoryTable";
+import CategoryTable from "../../components/organisms/tables/CategoryTable";
 import { CategoryContext } from "../../context/CategoryContext/CategoryContext";
 
 function AdminCategoryList() {

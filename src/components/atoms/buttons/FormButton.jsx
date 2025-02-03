@@ -1,9 +1,9 @@
 import { Button } from "@/components/ui/button";
 
-const FormButton = ({ submit, text }) => {
+const FormButton = ({ text, isSubmitting }) => {
     return (
-        <Button type={ submit }>
-            { text } 
+        <Button type="submit" disabled={ isSubmitting }>
+            { isSubmitting ? "Creadon..." : text } 
         </Button>
     );
 };
