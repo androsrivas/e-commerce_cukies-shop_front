@@ -4,6 +4,7 @@ import AdminLayout from "../layout/AdminLayout";
 import ProductList from "../pages/ProductList";
 import AdminProductList from "../pages/admin/AdminProductList";
 import AddProduct from "../pages/admin/AddProduct";
+import AdminCategoryList from "../pages/admin/AdminCategoryList";
 
 export const router = createBrowserRouter([
     {
@@ -45,6 +46,10 @@ export const router = createBrowserRouter([
                 path: "crear",
                 element: <AddProduct />
             },
+            {
+                path: "categorias",
+                element: <AdminCategoryList />
+            }
         ],
     },
 ]);
