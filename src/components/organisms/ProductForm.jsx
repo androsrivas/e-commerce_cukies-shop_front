@@ -1,6 +1,5 @@
-import { useEffect } from "react";
-import * as yup from "yup";
-import useFormHandler from "../../hooks/form/useFormHandler";
+import { useState, useContext } from "react";
+import { useForm } from "react-hook-form";
 import {
     Form,
     FormControl,
@@ -11,64 +10,140 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import useProductService from "../../hooks/api/useProductService";
+import { Checkbox } from "@/components/ui/checkbox";
+import FormButton from "../atoms/buttons/FormButton";
+import * as yup from "yup";
+import { ProductContext } from "../../context/ProductContext/ProductContext";
+import { yupResolver } from "@hookform/resolvers/yup";
 
-const productSchema = yup.object({
-    name: yup.string().required("El nombre es obligatorio."),
-    price: yup.number().positive("El precio debe ser positivo.").required("El precio es obligatorio."),
-    desription: yup.string().optional(),
-    imageUrl: yup.string().url('Proporciona una URL válida.').optional(),
-    categoryName: yup.string().optional(),
-    featured: yup.boolean().optional()
+const schema = yup.object().shape({
+  name: yup.string().required("Indique un nombre para el producto.").label("Nombre"),
+  price: yup
+    .number()
+    .typeError("El precio debe ser un número.")
+    .positive("El precio debe ser un número positivo.")
+    .required("Indique el precio para el producto.")
+    .label("Precio"),
+  description: yup.string().label("Descripción"),
+  imageUrl: yup.string().url("Indique una URL válida.").label("Imagen"),
+  categoryName: yup.string().label("Categoría"),
+  featured: yup.boolean().label("Disponible"),
 });
 
 const ProductForm = () =>  {
-  const { addProduct, loading, errors } = useProductService();
-  const onSubmit = (data) => {
-    addProduct(data);
-  };
+  const { createProduct } = useContext(ProductContext);
+  const [ isSubmitting, setIsSubmitting ] = useState(false);
+  const form = useForm({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      name: "",
+      price: 0.00,
+      description: "",
+      imageUrl: "",
+      categoryName: "",
+      featured: false
+    },
+  });
 
-  const { register, handleSubmit, errors: formErrors, reset } = useFormHandler(productSchema, {}, onSubmit);
-
-  useEffect(() => {
-    if (!loading && !errors.length) reset();
-  }, [loading, errors, reset]);
+  const onSubmit = async (values) => {
+    setIsSubmitting(true);
+    try {
+      await createProduct(values);
+      form.reset();
+      alert("Producto creado correctamente.");
+    } catch (error) {
+      console.error("Error al crear el producto: ", error);
+      alert("Error al crear el producto.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
 
   return (
-    <Form onSubmit={ handleSubmit }>
-      <FormItem>
-        <FormLabel>Nombre</FormLabel>
-        <FormControl>
-          <Input placeholder="Nombre del producto" {...register('name')} />
-        </FormControl>
-        { formErrors.name && <FormMessage>{ formErrors.name.message }</FormMessage> }
-      </FormItem>
+    <Form {...form}>
+      <form onSubmit={ form.handleSubmit(onSubmit) }>
+        <FormField
+          name="name"
+          control={ form.control }
+          render={({field}) => (
+            <FormItem>
+              <FormLabel>Nombre</FormLabel>
+              <FormControl>
+                <Input placeholder="Nombre del producto" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-      <FormItem>
-      <FormLabel>Precio</FormLabel>
-        <FormControl>
-          <Input type="number" placeholder="Precio" {...register('price')} />
-        </FormControl>
-        { formErrors.price && <FormMessage>{ formErrors.price.message }</FormMessage> }
-      </FormItem>
+        <FormField 
+          name="price"
+          control={ form.control }
+          render={(field) => (
+            <FormItem>
+          <FormLabel>Precio</FormLabel>
+            <FormControl>
+              <Input type="number" placeholder="Precio" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+          )}
+        />
+          
 
-      <FormItem>
-      <FormLabel>Descripción</FormLabel>
-        <FormControl>
-          <Input placeholder="Descripción" {...register('description')} />
-        </FormControl>
-      </FormItem>
+        <FormField 
+          name="description"
+          control={ form.control }
+          render={({field}) => (
+            <FormItem>
+            <FormLabel>Descripción</FormLabel>
+              <FormControl>
+                <Input placeholder="Descripción" {...field} />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+        
+        
+        <FormField 
+          name="imageUrl"
+          control={ form.control }
+          render={({field}) => (
+            <FormItem>
+            <FormLabel>Imagen</FormLabel>
+              <FormControl>
+                <Input type="url" placeholder="Enlace de imagen" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        
 
-      <FormItem>
-      <FormLabel>Imagen</FormLabel>
-        <FormControl>
-          <Input type="url" placeholder="Enlace de imagen" {...register('imageUrl')} />
-          { formErrors.imageUrl && <FormMessage>{ formErrors.imageUrl.message }</FormMessage> }
-        </FormControl>
-      </FormItem>
+        {/* <FormField>
+          <FormItem>
+          <FormLabel>Categoría</FormLabel>
+            <FormControl>
+              <Input placeholder="Categoría" {...fields.categoryName.register} />
+              { fields.categoryName.error && <FormMessage>{ fields.categoryName.error.message }</FormMessage> }
+            </FormControl>
+          </FormItem>
+        </FormField> */}
 
-
-
+        <FormField 
+          name="featured"
+          control={ form.control }
+          render={({field}) => (
+            <FormItem>
+            <FormLabel>Disponible</FormLabel>
+              <FormControl>
+                <Checkbox {...field} id="featured" />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+        <FormButton submit={ onSubmit } text="Crear"/>
+      </form>
     </Form>
   )
 }

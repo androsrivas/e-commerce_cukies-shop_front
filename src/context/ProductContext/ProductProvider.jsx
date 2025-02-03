@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import { ProductContext } from "./ProductContext";
-import { getAllProducts } from "../../services/ProductService";
+import { getAllProducts, createProduct } from "../../services/ProductService";
 
 const ProductProvider = ({ children }) => {
     const [products, setProducts] = useState(null);
@@ -22,11 +22,29 @@ const ProductProvider = ({ children }) => {
 
     }, []);
 
+    const addProduct = async (productData) => {
+        setLoading(true);
+        setErrors(null);
+
+        try {
+            const newProduct = await createProduct(productData);
+            setProducts(prevProducts => [...(prevProducts || []), newProduct]);
+            return newProduct;
+        } catch (error) {
+            console.error("Error añadiendo nuevo producto: ", error);
+            setErrors([error.message]);
+            throw error;
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const contextValue = useMemo(() => ({
         products, 
         loading,
         errors,
-    }), [products, loading, errors]);
+        addProduct,
+    }), [products, loading, errors, addProduct]);
     
     if (loading) return <div>Loading...</div>;
     if (errors?.length) return <div>Error: { errors.join(", ") }</div>;
