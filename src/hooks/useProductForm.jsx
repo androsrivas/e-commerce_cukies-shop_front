@@ -14,12 +14,13 @@ const useProductForm = () => {
             price: 0,
             description: "",
             imageUrl: "",
-            categoryId: "Selecciona una categoría",
+            categoryId: null,
             featured: false,
         },
     });
 
     const onSubmit = async (values) => {
+        console.log("Values before submit: ", values);
         setIsSubmitting(true);
         try {
             const productData = {

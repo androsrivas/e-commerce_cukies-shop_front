@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useContext } from "react";
 import { FormProvider } from "react-hook-form";
 import {
     Form,
@@ -9,6 +9,7 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import FormButton from "../../atoms/buttons/FormButton";
 import { CategoryContext } from "../../../context/CategoryContext/CategoryContext";
@@ -20,6 +21,7 @@ import {
     SelectValue,
   } from "@/components/ui/select";
 import useProductForm from "../../../hooks/useProductForm";
+import { stringToUpperCase } from "../../../utils/utils";
 
 const ProductForm = () =>  {
   const { categories } = useContext(CategoryContext);
@@ -35,6 +37,7 @@ const ProductForm = () =>  {
           <FormControl>
             <Component {...field} {...props} />
           </FormControl>
+          <FormMessage />
         </FormItem>
       )}
     />
@@ -46,8 +49,9 @@ const ProductForm = () =>  {
       <form onSubmit={ form.handleSubmit(onSubmit) }>
         { renderFormField("Nombre", "name", Input, { placeholder: "Nombre del producto" }) }
         { renderFormField("Precio", "price", Input, { type: "number", placeholder: "Precio"}) }
-        { renderFormField("Descripción", "description", Input, { placeholder: "Escribe aquí una breve descripción..."}) }
+        { renderFormField("Descripción", "description", Textarea, { placeholder: "Escribe una breve descripción..."}) }
         { renderFormField("Imagen", "imageUrl", Input, { type: "url", placeholder: "Enlace de imagen"}) }
+
         <FormField 
           name="categoryId"
           control={ form.control }
@@ -55,14 +59,18 @@ const ProductForm = () =>  {
             <FormItem>
             <FormLabel>Categoría</FormLabel>
             <FormControl>
-              <Select onValueChange={ field.onChange } defaultValue={ field.value }>
+              <Select 
+                value={ field.value || "-1" } 
+                onValueChange={(value) => field.onChange(Number(value))}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Selecciona una categoría"/>
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="-1" disabled>Selecciona una categoría</SelectItem>
                   {categories.map((category) => (
                     <SelectItem key={ category.id } value={ category.id }>
-                      { category.name }
+                      { stringToUpperCase(category.name) }
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -75,9 +83,9 @@ const ProductForm = () =>  {
         {renderFormField("Disponible", "featured", Checkbox, {
           id: "featured",
           checked: !!form.watch("featured"),
-          onCheckedChange: form.setValue.bind(null, "featured")
+          onCheckedChange: (checked) => form.setValue("featured", checked)
         })}
-        
+
         <FormButton text="Crear" isSubmitting={ isSubmitting }/>
       </form>
     </Form>
