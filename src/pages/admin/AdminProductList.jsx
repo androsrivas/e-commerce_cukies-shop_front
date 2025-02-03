@@ -8,7 +8,6 @@ function AdminProductList() {
     if (loading) return <div>Loading products...</div>;
     if (errors?.length) return <div>Error: {errors.join(", ")}</div>;
 
-    console.log("AdminProductList dades rebudes: ", products);
   return (
     <main>
         <div>

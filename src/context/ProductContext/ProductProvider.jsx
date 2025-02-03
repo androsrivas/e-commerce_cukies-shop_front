@@ -13,7 +13,6 @@ const ProductProvider = ({ children }) => {
                 const data = await getAllProducts();
                 setProducts(data);
             } catch (error) {
-                console.error("Error rebent dades: ", error);
                 setErrors([error.message]);
             } finally {
                 setLoading(false);

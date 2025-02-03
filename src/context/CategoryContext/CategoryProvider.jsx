@@ -1,39 +1,42 @@
-import { useState, useEffect } from "react";
-import useCategoryService from "../../hooks/api/useCategoryService";
+import { useState, useEffect, useMemo } from "react";
+import { CategoryContext } from "./CategoryContext";
+import { getAllCategories } from "../../services/CategoryService";
 
 const CategoryProvider = ({ children }) => {
-    const {
+    const [categories, setCategories] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [errors, setErrors] = useState(null);
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const data = await getAllCategories();
+                setCategories(data);
+            } catch (error) {
+                setErrors([error.message]);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchCategories();
+
+    }, []);
+
+    const contextValue = useMemo(() => ({
         categories,
         loading,
         errors,
-        fetchAllCategories,
-        fetchCategoryById,
-        addCategory,
-        modifyCategory,
-        removeCategory
-    } = useCategoryService();
-    const [ categoryList, setCategoryList ] = useState([]);
+    }), [categories, loading, errors]);
 
-    useEffect(() => {
-        fetchAllCategories();
-    }, []);
+    if (loading) return <div>Loading...</div>;
+    if (errors?.length) return <div>Error: { errors.join(", ") }</div>;
 
-    useEffect(() => {
-        if (Array.isArray(categories)) setCategoryList(categories);
-    }, [categories]);
+    if (Array.isArray(categories) && categories.length === 0) {
+        return <div>No categories found.</div>;
+    }
 
     return(
-        <CategoryContext.Provider value={{
-            categories,
-            setCategoryList,
-            loading,
-            errors,
-            fetchAllCategories,
-            fetchCategoryById,
-            addCategory,
-            modifyCategory,
-            removeCategory
-        }}>
+        <CategoryContext.Provider value={ contextValue }>
             { children }
         </CategoryContext.Provider>
     )

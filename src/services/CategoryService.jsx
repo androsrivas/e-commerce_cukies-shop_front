@@ -17,8 +17,8 @@ const createCategory = async(newCategory) => {
     return response.data;
 }
 
-const updateCategory = async (id, updateCategory) => {
-    const response = await axios.put(`${url}/${id}`, updateCategory);
+const updateCategory = async (id, updatedCategory) => {
+    const response = await axios.put(`${url}/${id}`, updatedCategory);
     return response.data;
 }
 
