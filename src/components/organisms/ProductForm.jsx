@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form";
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
     FormItem,
     FormLabel,
@@ -15,6 +14,7 @@ import FormButton from "../atoms/buttons/FormButton";
 import * as yup from "yup";
 import { ProductContext } from "../../context/ProductContext/ProductContext";
 import { yupResolver } from "@hookform/resolvers/yup";
+import CategorySelect from "../atoms/CategorySelect";
 
 const schema = yup.object().shape({
   name: yup.string().required("Indique un nombre para el producto.").label("Nombre"),
@@ -120,15 +120,19 @@ const ProductForm = () =>  {
         />
         
 
-        {/* <FormField>
-          <FormItem>
-          <FormLabel>Categoría</FormLabel>
+        <FormField 
+          name="categoryName"
+          control={ form.control }
+          render={({field}) => (
+            <FormItem>
+            <FormLabel>Categoría</FormLabel>
             <FormControl>
-              <Input placeholder="Categoría" {...fields.categoryName.register} />
-              { fields.categoryName.error && <FormMessage>{ fields.categoryName.error.message }</FormMessage> }
+              <CategorySelect {...field} />
             </FormControl>
           </FormItem>
-        </FormField> */}
+          )}
+        />
+            
 
         <FormField 
           name="featured"
