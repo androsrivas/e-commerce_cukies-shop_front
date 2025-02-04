@@ -20,7 +20,6 @@ const useProductForm = () => {
     });
 
     const onSubmit = async (values) => {
-        console.log("Values before submit: ", values);
         setIsSubmitting(true);
         try {
             const productData = {
