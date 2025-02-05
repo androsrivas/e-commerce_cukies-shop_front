@@ -1,47 +1,74 @@
-import { useState, useEffect } from "react";
-import {
-    getAllCategories,
-    getCategoryById,
-    createCategory,
-    updateCategory,
-    deleteCategory
-} from "../services/CategoryService";
+import { useState, useCallback, useMemo } from "react";
+import categortService from "../services/CategoryService";
 
 const useCategories = () => {
     const [categories, setCategories] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
 
-    const getAllCategoriesFromApiService = async () => {
-        const data = await getAllCategories();
-        setCategories(data);
-    };
+    const fetchCategories = useCallback(async () => {
+        setLoading(true);
+        setError(null);
+        try {
+            const fetchedCategories = await categortService.getAllCategories();
+            setCategories(fetchedCategories);
+        } catch (e) {
+            setError(e);
+            console.error("Error fetching categories: ", e);
+        } finally {
+            setLoading(false);
+        }
+    }, []);        
+    
+    const addCategory = useCallback(async (newCategory) => {
+        setCategories(prevCategories => [...prevCategories, newCategory]);
 
-    const addCategory = async (newCategory) => {
-        const creeatedCategory = await createCategory(newCategory);
-        setCategories((prevCategories) => [...prevCategory, creeatedCategory]);
-    };
-
-    const updatedCategoryById = async (id, updatedCategory) => {
-        const updated = await updateCategory(id, updatedCategory);
-        setCategories((prevCategories) => 
-            prevCategories.map((category) => (category.id === id ? updated : category))
-        );
-    };
-
-    const deleteCategoryById = async (id) => {
-        await deleteCategory(id);
-        setCategories((prevCategories) => prevCategories.filter((category) => category.id !== id));
-    };
-
-    useEffect(() => {
-        getAllCategoriesFromApiService();
+        try {
+            const addedCategory = await categortService.createCategory(newCategory);
+            setCategories(prevCategories => prevCategories.map(category => category === newCategory ? addedCategory : category));
+        } catch (e) {
+            setError(e);
+            console.error("Error creating category: ", e);
+        }
     }, []);
 
-    return{
+    const updatedCategoryById = useCallback(async (id, updatedCategory) => {
+        const previousCategories = [...categories];
+        setCategories(prevCategories => prevCatgories.map(category => category.id === id ? updatedCategory : category));
+
+        try {
+            await categortService.updateCategory(id, updatedCategory);
+        } catch (e) {
+            setError(e);
+            console.error("Error updating category: ", e);
+            setCategories(previousCategories);
+        }
+    }, [categories]);
+
+    const deleteCategoryById = useCallback(async (id) => {
+        const previousCategories = [...categories];
+        setCategories(prevCategories => prevCategories.filter(category => category.id === id));
+
+        try {
+            await categortService.deleteCategory(id);
+        } catch (e) {
+            setError(e);
+            console.error("Error deleting category: ", e);
+            setCategories(previousCategories);
+        }
+    }, [categories]);
+
+    const contextValue = useMemo(() => ({
         categories,
+        loading,
+        error,
+        fetchCategories,
         addCategory,
         updatedCategoryById,
         deleteCategoryById
-    };
+    }), [categories, loading, error, fetchCategories, addCategory, updatedCategoryById, deleteCategoryById]);
+
+    return contextValue;
 };
 
 export default useCategories;
