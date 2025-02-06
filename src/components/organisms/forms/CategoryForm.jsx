@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import FormButton from "../../atoms/buttons/FormButton";
+import RedirectButton from "../../atoms/buttons/RedirectButton";
 import { yupResolver } from "@hookform/resolvers/yup";
 import categorySchema from "../../../schemas/categorySchema";
 import { CategoryContext } from "../../../context/CategoryContext/CategoryContext";
@@ -55,7 +56,10 @@ const CategoryForm = () => {
                         </FormItem>
                     )}
                 />
-                <FormButton text="Añadir" isSubmitting={ isSubmitting } />
+                <div className="flex gap-5 py-5">
+                    <FormButton text="Añadir" isSubmitting={ isSubmitting } />
+                    <RedirectButton to="/admin/categorias">Cancelar</RedirectButton>
+                </div>
             </form>
         </Form>
         </FormProvider>

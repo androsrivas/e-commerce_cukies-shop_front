@@ -1,6 +1,7 @@
 import { useContext, useEffect } from "react";
 import CategoryTable from "../../components/organisms/tables/CategoryTable";
 import { CategoryContext } from "../../context/CategoryContext/CategoryContext";
+import RedirectButton from "../../components/atoms/buttons/RedirectButton";
 
 function AdminCategoryList() {
     const { categories, loading, error, fetchCategories } = useContext(CategoryContext);
@@ -18,7 +19,12 @@ function AdminCategoryList() {
     return (
         <main>
             <header className="p-5">
-                breadcrumb
+                <RedirectButton 
+                    to="/admin/crear-categoria"
+                    className="rounded-xl"
+                >
+                    Crear categoría
+                </RedirectButton>
             </header>
             <div>
                 <CategoryTable
