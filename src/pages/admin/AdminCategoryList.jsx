@@ -3,7 +3,7 @@ import CategoryTable from "../../components/organisms/tables/CategoryTable";
 import { CategoryContext } from "../../context/CategoryContext/CategoryContext";
 
 function AdminCategoryList() {
-    const { categories, loading, error, fetchCategories } = useContext(CategoryContext);
+    const { categories, loading, error, fetchCategories, deleteCategoryById } = useContext(CategoryContext);
 
     useEffect(() => {
         fetchCategories();
@@ -23,6 +23,7 @@ function AdminCategoryList() {
             <div>
                 <CategoryTable
                     categories={ categories } 
+                    deleteCategoryById={deleteCategoryById}
                 />
             </div>
         </main>
