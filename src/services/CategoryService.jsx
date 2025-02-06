@@ -1,36 +1,60 @@
 import axios from "axios";
 
-const url = "http://localhost:8080/api/categories";
+const API_URL = import.meta.env.VITE_API_URL; 
 
-const getAllCategories = async () => {
-    const response = await axios.get(url);
-    return response.data;
+const categoryService = {
+    getAllCategories: async () => {
+        try {
+            const response = await axios.get(`${API_URL}/categories`);
+            return response.data;
+        } catch (error) {
+            console.error("Error fetching categories: ", error);
+            throw error;
+        }
+    },
+
+    getCategoryById: async (id) => {
+        try {
+            const response = await axios.get(`${API_URL}/categories/${id}`);
+            return response.data;
+        } catch (error) {
+            console.error("Error fetching category: ", error);
+            throw error;
+        }
+    },
+
+    createCategory: async (newCategory) => {
+        try {
+            const response = await axios.post(`${API_URL}/categories`, newCategory);
+            return response.data;
+        } catch (error) {
+            console.error("Error creating new category: ", error);
+            if (error.response) {
+                console.error("Error details: ", error.response.data);
+            }
+            throw error;
+        }
+    },
+
+    updateCategory: async (id, updatedCategory) => {
+        try {
+            const response = await axios.put(`${API_URL}/categories/${id}`, updatedCategory);
+            return response.data;
+        } catch (error) {
+            console.error("Error updating category: ", error);
+            throw error;
+        }
+    },
+
+    deleteCategory: async (id) => {
+        try {
+            const response = await axios.delete(`${API_URL}/categories/${id}`);
+            return response.data;
+        } catch (error) {
+            console.error("Error deleting category: ", error);
+            throw error;
+        }
+    },
 }
 
-const getCategoryById = async(id) => {
-    const response = await axios.get(`${url}/${id}`);
-    return response.data;
-}
-
-const createCategory = async(newCategory) => {
-    const response = await axios.post(url, newCategory);
-    return response.data;
-}
-
-const updateCategory = async (id, updatedCategory) => {
-    const response = await axios.put(`${url}/${id}`, updatedCategory);
-    return response.data;
-}
-
-const deleteCategory = async (id) => {
-    const response = await axios.delete(`${url}/${id}`);
-    return response.data;
-}
-
-export {
-    getAllCategories,
-    getCategoryById,
-    createCategory,
-    updateCategory,
-    deleteCategory
-};
+export default categoryService;

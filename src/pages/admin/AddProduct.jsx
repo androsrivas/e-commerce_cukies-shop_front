@@ -1,9 +1,9 @@
-import ProductForm from "../../components/organisms/forms/ProductForm"
+import CreateProductForm from "../../components/organisms/forms/CreateProductForm"
 
 
 function AddProduct() {
   return (
-    <ProductForm />
+    <CreateProductForm />
   )
 }
 

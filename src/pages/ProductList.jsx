@@ -1,25 +1,35 @@
-import { useContext } from "react";
-import { ProductContext } from "../context/ProductContext/ProductContext";
+import { useContext, useEffect } from "react";
 import ProductCard from "../components/organisms/ProductCard";
+import { ProductContext } from "../context/ProductContext/ProductContext";
 
 function ProductList() {
-    const { products, loading, errors } = useContext(ProductContext);
+    const { products, fetchProducts } = useContext(ProductContext);
 
-    if (loading) return <div className="text-center col-span-full">Loading products...</div>
-    if (errors?.length) return <div className="text-center col-span-full">Error: {errors.join(", ")}</div>;
+    useEffect(() => {
+        fetchProducts();
+    }, [fetchProducts]);
+
+    // if (loading) return <div className="text-center col-span-full">Loading products...</div>
+    // if (error) {
+    //     const eMsg = Array.isArray(error) ? error.join(", ") : error;
+    //     return <div className="text-center col-span-full">Error: {eMsg}</div>;
+    // }
 
     return (
         <main className="container mx-auto px-4 py-8">
+            <header>
+                breadcrumb
+            </header>
             <h2 className="text-2xl font-bold p-10">Productos</h2>
             <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {Array.isArray(products) && products.length > 0 ? (
                     products.map((product) => (
-                        <div key={ product.name }>
+                        <div key={ product.id }>
                             <ProductCard product={ product }/>
                         </div>
                     ))
                 ) : (
-                    <p className="text-center col-span-full">{ errors.join(", ") }</p>
+                    <p>Error loading porducts.</p>
                 )}
             </section>
         </main>

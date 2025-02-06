@@ -1,13 +1,15 @@
 import React from "react";
+import AdminBreadcrumb from "./atoms/AdminBreadcrumb";
 
 function AdminHeader() {
   return (
-    <header className="flex justify-between items-center">
+    <header className="flex flex-col gap-5">
       <section className="flex items-center space-x-2">
-        Barra de cerca
+        <div>Barra de cerca</div>
+        <div>Icones admin</div>
       </section>
       <section className="flex items-center space-x-4">
-        Icones admin
+        <AdminBreadcrumb />
       </section>
     </header>
   )
