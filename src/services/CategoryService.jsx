@@ -29,6 +29,9 @@ const categoryService = {
             return response.data;
         } catch (error) {
             console.error("Error creating new category: ", error);
+            if (error.response) {
+                console.error("Error details: ", error.response.data);
+            }
             throw error;
         }
     },

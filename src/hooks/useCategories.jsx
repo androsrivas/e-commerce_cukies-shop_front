@@ -20,7 +20,6 @@ const useCategories = () => {
         }
     }, []);  
           
-    
     const addCategory = useCallback(async (newCategory) => {
         const tempId = newCategory.id || Date.now();
         const newCategoryWithTempId = {...newCategory, id: tempId };
