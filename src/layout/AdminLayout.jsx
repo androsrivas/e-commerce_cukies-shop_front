@@ -7,7 +7,7 @@ import CategoryProvider from "../context/CategoryContext/CategoryProvider";
 
 const AdminLayout = () => {
     return (
-        <CategoryProvider>
+       <CategoryProvider>
         <ProductProvider>
         <SidebarProvider>
         <AdminSidebar />
@@ -17,7 +17,7 @@ const AdminLayout = () => {
         </main>
         </SidebarProvider>
         </ProductProvider>
-        </CategoryProvider>
+       </CategoryProvider>
     );
 };
 

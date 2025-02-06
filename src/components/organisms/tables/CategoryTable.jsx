@@ -8,6 +8,7 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { Button } from "@/components/ui/button";
+import { stringToUpperCase } from "../../../utils/utils";
 
 function CategoryTable({ categories }) {
     return (
@@ -25,7 +26,7 @@ function CategoryTable({ categories }) {
                     categories.map((category) => (
                         <TableRow key={ category.id }>
                             <TableCell>{ category.id }</TableCell>
-                            <TableCell>{ category.name }</TableCell>
+                            <TableCell>{ stringToUpperCase(category.name) }</TableCell>
                             <TableCell className="flex gap-2">
                                 <Button className="rounded-xl">Ver detalles</Button>
                                 <Button className="rounded-xl">Editar</Button>
