@@ -15,7 +15,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import categorySchema from "../../../schemas/categorySchema";
 import { CategoryContext } from "../../../context/CategoryContext/CategoryContext";
 
-const CategoryForm = () => {
+const CreateCategoryForm = () => {
     const { addCategory } = useContext(CategoryContext);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const form = useForm({
@@ -66,4 +66,4 @@ const CategoryForm = () => {
     )
 };
 
-export default CategoryForm;
+export default CreateCategoryForm;

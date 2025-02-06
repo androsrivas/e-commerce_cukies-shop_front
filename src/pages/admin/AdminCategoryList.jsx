@@ -27,6 +27,7 @@ function AdminCategoryList() {
                 </RedirectButton>
             </header>
             <div>
+                <h2 className="text-3xl">Categorías</h2>
                 <CategoryTable
                     categories={ categories } 
                 />
