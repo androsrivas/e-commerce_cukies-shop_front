@@ -1,10 +1,9 @@
-import RedirectButton from "../../components/atoms/buttons/RedirectButton"
-import CategoryForm from "../../components/organisms/forms/CategoryForm"
+import CreateCategoryForm from "../../components/organisms/forms/CreateCategoryForm"
 
 function AddCategory() {
   return (
     <>
-        <CategoryForm />
+        <CreateCategoryForm />
     </>
   )
 }

@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import FormButton from "../../atoms/buttons/FormButton";
+import RedirectButton from "../../atoms/buttons/RedirectButton";
 import { CategoryContext } from "../../../context/CategoryContext/CategoryContext";
 import {
     Select,
@@ -23,7 +24,7 @@ import {
 import useProductForm from "../../../hooks/useProductForm";
 import { stringToUpperCase } from "../../../utils/utils";
 
-const ProductForm = () =>  {
+const CreateProductForm = () =>  {
   const { categories } = useContext(CategoryContext);
   const { form, onSubmit, isSubmitting } = useProductForm();
 
@@ -85,12 +86,14 @@ const ProductForm = () =>  {
           checked: !!form.watch("featured"),
           onCheckedChange: (checked) => form.setValue("featured", checked)
         })}
-
-        <FormButton text="Crear" isSubmitting={ isSubmitting }/>
+        <div className="flex gap-5 py-5">
+          <FormButton text="Crear" isSubmitting={ isSubmitting }/>
+          <RedirectButton to="/admin/productos">Cancelar</RedirectButton>
+        </div>
       </form>
     </Form>
     </FormProvider>
   )
 }
 
-export default ProductForm;
+export default CreateProductForm;
