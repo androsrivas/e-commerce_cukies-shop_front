@@ -3,7 +3,10 @@ import CreateProductForm from "../../components/organisms/forms/CreateProductFor
 
 function AddProduct() {
   return (
-    <CreateProductForm />
+    <>
+      <h2 className="text-3xl py-5">Crear producto</h2>
+      <CreateProductForm />
+    </>
   )
 }
 
